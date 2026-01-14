@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Valentine?</title>
+  <title>Valentine Protocol</title>
   <style>
     :root{
       --bg1:#ffe3ec;
-      --bg2:#ff7aa2;
+      --bg2:#ff5c8a;
       --card: rgba(255,255,255,.82);
       --text:#141414;
       --yes:#22c55e;
       --no:#ef4444;
-      --maybe:#111827;
+      --dark:#111827;
     }
     body{
       margin:0;
@@ -24,6 +24,62 @@
       color:var(--text);
       overflow:hidden;
     }
+
+    /* ===== Loading Screen ===== */
+    #loader{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(circle at top, #111827, #000);
+      color:white;
+      z-index:9999;
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    #loader.hide{
+      opacity:0;
+      transform: scale(1.02);
+      pointer-events:none;
+    }
+    .terminal{
+      width:min(720px, 92vw);
+      border-radius:22px;
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      padding:22px;
+      text-align:left;
+      backdrop-filter: blur(10px);
+    }
+    .terminal .top{
+      display:flex;
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .dot{ width:12px; height:12px; border-radius:50%; }
+    .dot.red{ background:#ff5f56;}
+    .dot.yellow{ background:#ffbd2e;}
+    .dot.green{ background:#27c93f;}
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size:14px;
+      line-height:1.55;
+      opacity:.95;
+      white-space:pre-wrap;
+    }
+    .blink{
+      display:inline-block;
+      width:10px;
+      height:16px;
+      background:white;
+      margin-left:4px;
+      animation: blink 1s step-end infinite;
+      vertical-align:-2px;
+    }
+    @keyframes blink{
+      50%{opacity:0;}
+    }
+
+    /* ===== Main Card ===== */
     .card{
       width:min(760px, 92vw);
       padding:44px 26px 34px;
@@ -33,6 +89,13 @@
       box-shadow: 0 20px 60px rgba(0,0,0,.20);
       text-align:center;
       position:relative;
+      transform: translateY(8px);
+      opacity:0;
+      animation: popIn .7s ease forwards;
+      animation-delay: 2.4s; /* after loader fades */
+    }
+    @keyframes popIn{
+      to{ transform: translateY(0); opacity:1;}
     }
     h1{
       margin:0 0 12px;
@@ -57,7 +120,7 @@
       border:0;
       padding:14px 22px;
       border-radius:999px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
       font-size:18px;
       transition: transform .12s ease, filter .12s ease;
@@ -65,19 +128,24 @@
       white-space:nowrap;
     }
     button:active{ transform: scale(.97); }
-    #yes{ background:var(--yes); color:white; box-shadow: 0 12px 26px rgba(34,197,94,.35); }
+    #yes{
+      background:var(--yes);
+      color:white;
+      box-shadow: 0 12px 26px rgba(34,197,94,.35);
+    }
     #no{
       background:var(--no);
       color:white;
       box-shadow: 0 12px 26px rgba(239,68,68,.35);
       position:relative;
     }
-    #maybe{ background:var(--maybe); color:white; opacity:.92; }
     .note{
       margin-top:18px;
       font-size:14px;
       opacity:.75;
     }
+
+    /* toast */
     .toast{
       position:fixed;
       left:50%;
@@ -91,48 +159,111 @@
       opacity:0;
       pointer-events:none;
       transition: opacity .18s ease, transform .18s ease;
+      z-index:10000;
     }
     .toast.show{
       opacity:1;
       transform:translateX(-50%) translateY(-6px);
     }
+
+    /* floating hearts */
     .heart{
       position:absolute;
       font-size:18px;
       opacity:.65;
       animation: floatUp 6s linear infinite;
       bottom:-40px;
+      pointer-events:none;
     }
     @keyframes floatUp{
       0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
       12%{ opacity:.65; }
       100%{ transform: translateY(-120vh) translateX(50px) rotate(360deg); opacity:0; }
     }
+
+    /* yes pulse */
+    .pulse{
+      animation: pulse .8s ease infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform: scale(1);}
+      50%{ transform: scale(1.05);}
+    }
   </style>
 </head>
 <body>
 
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="terminal">
+      <div class="top">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="mono" id="log"></div>
+      <span class="blink"></span>
+    </div>
+  </div>
+
+  <!-- Main -->
   <div class="card">
     <h1>Hita, will you be my Valentine? 💘</h1>
-    <p>I wanted to ask you properly… with technology and unnecessary drama.</p>
+    <p>I’m seeing you soon… but I had to ask properly 😌</p>
 
     <div class="buttons" id="btnWrap">
-      <button id="yes">YES 😌</button>
-      <button id="no">no (illegal)</button>
-      <button id="maybe">maybe 🤨</button>
+      <button id="yes" class="pulse">YES 😌</button>
+      <button id="no">no 😭</button>
     </div>
 
-    <div class="note">P.S. “no” is currently experiencing technical difficulties.</div>
+    <div class="note">Warning: “no” is currently disabled for your safety.</div>
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <script>
+    // ===== LOADER SCRIPT =====
+    const logEl = document.getElementById("log");
+    const loader = document.getElementById("loader");
+
+    const lines = [
+      "Initializing Valentine Protocol v1.4.2...",
+      "Locating Hita ✅",
+      "Verifying cuteness level... ██████████ 100%",
+      "Loading romantic intentions... ██████████ 100%",
+      "Bypassing 'no' option... ✅",
+      "Launching question..."
+    ];
+
+    let i = 0;
+    function typeLine(){
+      if(i >= lines.length){
+        setTimeout(()=>loader.classList.add("hide"), 600);
+        return;
+      }
+      logEl.textContent += (i===0 ? "" : "\n") + lines[i];
+      i++;
+      setTimeout(typeLine, 360);
+    }
+    typeLine();
+
+    // ===== MAIN PAGE SCRIPT =====
     const noBtn = document.getElementById('no');
     const yesBtn = document.getElementById('yes');
-    const maybeBtn = document.getElementById('maybe');
     const wrap  = document.getElementById('btnWrap');
     const toast = document.getElementById('toast');
+
+    const roasts = [
+      "Try again 😭",
+      "That button is decorative.",
+      "No?? in THIS economy??",
+      "Nice attempt. Denied.",
+      "Girl be serious 😌",
+      "Absolutely not 💀"
+    ];
 
     function showToast(msg){
       toast.textContent = msg;
@@ -141,33 +272,36 @@
       window.__t = setTimeout(()=>toast.classList.remove('show'), 1400);
     }
 
-    // NO button dodges the cursor/finger
+    // NO button teleports
     function dodge(){
       const rect = wrap.getBoundingClientRect();
       const maxX = rect.width - noBtn.offsetWidth;
-      const maxY = 110;
+      const maxY = 120;
 
       const x = Math.max(0, Math.min(maxX, Math.random()*maxX));
       const y = Math.random()*maxY;
 
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
-      showToast("Nice try 😭");
+      noBtn.style.transform = `translate(${x}px, ${y}px) rotate(${(Math.random()*14-7).toFixed(1)}deg)`;
+
+      showToast(roasts[Math.floor(Math.random()*roasts.length)]);
     }
 
     noBtn.addEventListener('mouseenter', dodge);
+    noBtn.addEventListener('click', dodge);
     noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodge(); });
 
-    maybeBtn.addEventListener('click', ()=>{
-      showToast("“Maybe” detected. Upgrading to “Yes.”");
-      setTimeout(()=>window.location.href="gifts.html", 700);
-    });
-
+    // YES action
     yesBtn.addEventListener('click', ()=>{
-      window.location.href = "gifts.html";
+      confetti({ particleCount: 220, spread: 100, origin: { y: 0.75 } });
+      setTimeout(()=>confetti({ particleCount: 150, spread: 130, origin: { y: 0.7 } }), 260);
+      showToast("Correct answer ✅");
+
+      // small delay then go to gifts page
+      setTimeout(()=>window.location.href="gifts.html", 900);
     });
 
     // floating hearts
-    const hearts = ["💗","💖","💘","💝","💕"];
+    const hearts = ["💗","💖","💘","💝","💕","❤️"];
     setInterval(()=>{
       const h = document.createElement('div');
       h.className = 'heart';
@@ -176,8 +310,8 @@
       h.style.animationDuration = (4 + Math.random()*4) + "s";
       h.style.fontSize = (14 + Math.random()*22) + "px";
       document.body.appendChild(h);
-      setTimeout(()=>h.remove(), 8000);
-    }, 260);
+      setTimeout(()=>h.remove(), 9000);
+    }, 240);
   </script>
 
 </body>
