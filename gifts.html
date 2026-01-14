@@ -9,16 +9,17 @@
       --bg1:#ffe3ec;
       --bg2:#ff5c8a;
 
-      --card: rgba(255,255,255,.86);
-      --glass: rgba(255,255,255,.45);
+      --card: rgba(255,255,255,.88);
+      --panel: rgba(255,255,255,.78);
 
       --text:#111827;
-      --muted: rgba(17,24,39,.70);
+      --muted: rgba(17,24,39,.68);
 
       --btn:#111827;
-      --btn2: rgba(17,24,39,.14);
+      --btn2: rgba(17,24,39,.12);
 
-      --ring: rgba(255,255,255,.55);
+      --good: rgba(34,197,94,.16);
+      --goodBorder: rgba(34,197,94,.35);
     }
 
     *{ box-sizing:border-box; }
@@ -29,66 +30,67 @@
       display:grid;
       place-items:center;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
       background:
         radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 40%),
         radial-gradient(circle at 80% 20%, rgba(255,255,255,.25), transparent 35%),
         radial-gradient(circle at top, var(--bg1), var(--bg2));
-      color:var(--text);
       overflow-x:hidden;
     }
 
     .shell{
-      width:min(1020px, 94vw);
-      padding:26px 0 42px;
+      width:min(1100px, 94vw);
+      padding: 30px 0 44px;
     }
 
     .card{
       background:var(--card);
-      border-radius:28px;
-      padding:34px 22px 24px;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 28px;
       box-shadow: 0 24px 70px rgba(0,0,0,.22);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.55);
+      padding: 34px 22px 22px;
     }
 
     .header{
       text-align:center;
-      padding: 6px 10px 18px;
+      padding: 6px 12px 18px;
     }
 
     h1{
       margin:0 0 8px;
-      font-size: clamp(26px, 4.6vw, 44px);
+      font-size: clamp(28px, 4.8vw, 48px);
       letter-spacing:-0.03em;
     }
-
     .sub{
       margin:0;
-      color: var(--muted);
-      font-size: clamp(14px, 2.1vw, 17px);
+      color:var(--muted);
+      font-size: clamp(14px, 2.2vw, 17px);
     }
 
     .grid{
-      margin-top:18px;
+      margin-top: 16px;
       display:grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:14px;
-      padding: 4px;
+      gap: 16px;
+      padding: 6px;
     }
-
-    @media (max-width: 860px){
+    @media (max-width: 900px){
       .grid{ grid-template-columns: 1fr; }
     }
 
     .gift{
-      border-radius:24px;
-      padding:22px 18px;
-      background: rgba(255,255,255,.82);
-      box-shadow: 0 14px 34px rgba(0,0,0,.10);
-      border: 1px solid rgba(255,255,255,.7);
       position:relative;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 16px 36px rgba(0,0,0,.11);
+      padding: 22px 18px;
       overflow:hidden;
-      transform: translateY(0);
+      min-height: 150px; /* makes it look “right” on desktop */
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
       transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
       isolation:isolate;
     }
@@ -96,30 +98,30 @@
     .gift::before{
       content:"";
       position:absolute;
-      inset:-80px;
-      background: radial-gradient(circle at top left, rgba(255,92,138,.35), transparent 55%);
+      inset:-90px;
+      background: radial-gradient(circle at top left, rgba(255,92,138,.30), transparent 55%);
       z-index:-1;
       transform: rotate(8deg);
     }
 
     .gift:hover{
-      transform: translateY(-4px);
-      box-shadow: 0 22px 50px rgba(0,0,0,.14);
-      filter: saturate(1.05);
+      transform: translateY(-5px);
+      box-shadow: 0 26px 58px rgba(0,0,0,.16);
+      filter: saturate(1.06);
     }
 
     .gift.selected{
-      outline: 3px solid rgba(34,197,94,.55);
-      box-shadow: 0 28px 62px rgba(34,197,94,.18);
+      outline: 3px solid var(--goodBorder);
+      box-shadow: 0 30px 70px rgba(34,197,94,.18);
     }
 
     .emoji{
-      font-size: 36px;
       position:absolute;
       right:16px;
       top:14px;
+      font-size: 34px;
       opacity:.95;
-      text-shadow: 0 8px 28px rgba(0,0,0,.10);
+      text-shadow: 0 10px 30px rgba(0,0,0,.10);
     }
 
     .gift h2{
@@ -129,30 +131,28 @@
     }
 
     .pick{
+      align-self:flex-start;
       border:0;
-      padding:12px 16px;
       border-radius:999px;
-      font-weight:900;
-      cursor:pointer;
+      padding: 12px 16px;
       background: var(--btn);
-      color:white;
-      font-size:16px;
-      transition: transform .12s ease, filter .12s ease;
+      color:#fff;
+      font-weight: 900;
+      cursor:pointer;
+      font-size: 15px;
+      transition: transform .12s ease;
     }
-
     .pick:active{ transform: scale(.98); }
 
     .details{
-      margin-top:18px;
-      padding:18px 16px;
-      border-radius:22px;
+      margin-top: 18px;
+      border-radius: 22px;
       background: rgba(17,24,39,.06);
       border: 1px solid rgba(255,255,255,.55);
-      text-align:left;
+      padding: 18px 16px;
       display:none;
       animation: slideIn .35s ease forwards;
     }
-
     @keyframes slideIn{
       from{ transform: translateY(8px); opacity:0; }
       to{ transform: translateY(0); opacity:1; }
@@ -160,79 +160,59 @@
 
     .detailsTop{
       display:flex;
+      flex-wrap:wrap;
+      gap:10px;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
+      margin-bottom: 10px;
     }
-
     .pill{
       display:inline-flex;
-      align-items:center;
       gap:8px;
-      padding:10px 12px;
+      align-items:center;
+      padding: 10px 12px;
       border-radius:999px;
-      background: rgba(34,197,94,.12);
-      border: 1px solid rgba(34,197,94,.25);
-      font-weight:900;
+      background: var(--good);
+      border: 1px solid var(--goodBorder);
+      font-weight: 900;
     }
 
-    .kv{
-      margin:10px 0;
-      color: rgba(17,24,39,.92);
-      font-size:15px;
+    .picked{
+      font-weight: 900;
     }
-    .kv b{
-      display:inline-block;
-      min-width: 92px;
-      color: rgba(17,24,39,1);
-    }
+
+    .kv{ margin: 10px 0; font-size: 15px; }
+    .kv b{ display:inline-block; min-width: 92px; }
 
     .actions{
-      margin-top:14px;
+      margin-top: 14px;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
     }
 
     a.btn{
-      display:inline-block;
       text-decoration:none;
+      display:inline-block;
       background: var(--btn);
-      color:white;
-      padding:12px 14px;
+      color:#fff;
+      padding: 12px 14px;
       border-radius:999px;
-      font-weight:900;
-      font-size:15px;
+      font-weight: 900;
+      font-size: 15px;
       transition: transform .12s ease;
     }
     a.btn:active{ transform: scale(.98); }
 
     a.btn.secondary{
       background: var(--btn2);
-      color: #111827;
+      color: var(--text);
     }
 
     .small{
-      margin-top:10px;
-      font-size:13px;
+      margin-top: 10px;
+      font-size: 13px;
       color: rgba(17,24,39,.65);
-    }
-
-    /* floating hearts */
-    .heart{
-      position:absolute;
-      bottom:-40px;
-      font-size:18px;
-      opacity:.6;
-      animation: floatUp 7s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes floatUp{
-      0%{ transform: translateY(0) rotate(0deg); opacity:0; }
-      10%{ opacity:.6; }
-      100%{ transform: translateY(-120vh) rotate(360deg); opacity:0; }
     }
 
     .toast{
@@ -254,6 +234,20 @@
       opacity:1;
       transform: translateX(-50%) translateY(-6px);
     }
+
+    .heart{
+      position:absolute;
+      bottom:-40px;
+      font-size:18px;
+      opacity:.55;
+      animation: floatUp 7s linear infinite;
+      pointer-events:none; /* important so it never blocks clicks */
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(0) rotate(0deg); opacity:0; }
+      10%{ opacity:.55; }
+      100%{ transform: translateY(-120vh) rotate(360deg); opacity:0; }
+    }
   </style>
 </head>
 
@@ -265,32 +259,30 @@
         <p class="sub">Pick wisely.</p>
       </div>
 
-      <!-- Gifts -->
       <div class="grid" id="giftGrid">
-        <div class="gift" data-card="1">
+        <div class="gift" data-gift="The Drinker 🥂">
           <div class="emoji">🥂</div>
           <h2>The Drinker</h2>
-          <button class="pick" data-gift="The Drinker 🥂">Choose this</button>
+          <button class="pick" type="button">Choose this</button>
         </div>
 
-        <div class="gift" data-card="2">
+        <div class="gift" data-gift="The Mysterious and Cool 🕶️">
           <div class="emoji">🕶️</div>
           <h2>The Mysterious and Cool</h2>
-          <button class="pick" data-gift="The Mysterious and Cool 🕶️">Choose this</button>
+          <button class="pick" type="button">Choose this</button>
         </div>
 
-        <div class="gift" data-card="3">
+        <div class="gift" data-gift="The Romantic 🌹">
           <div class="emoji">🌹</div>
           <h2>The Romantic</h2>
-          <button class="pick" data-gift="The Romantic 🌹">Choose this</button>
+          <button class="pick" type="button">Choose this</button>
         </div>
       </div>
 
-      <!-- Details -->
       <div class="details" id="details">
         <div class="detailsTop">
           <div class="pill">Date Night Locked In ✅</div>
-          <div id="pickedTitle" style="font-weight:900;"></div>
+          <div class="picked" id="pickedTitle"></div>
         </div>
 
         <div class="kv"><b>When:</b> <span id="whenText"></span></div>
@@ -299,11 +291,11 @@
 
         <div class="actions">
           <a class="btn" id="googleBtn" target="_blank" rel="noopener">Add to Google Calendar</a>
+          <a class="btn secondary" id="icsBtn" href="#">Download calendar invite (.ics)</a>
+          <a class="btn secondary" id="nextBtn" href="final.html">Continue 😏</a>
         </div>
 
-        <div class="small">
-          It’ll open your calendar — just tap <b>Add</b> / <b>Save</b>.
-        </div>
+        <div class="small">It’ll open your calendar — just tap <b>Add</b> / <b>Save</b>.</div>
       </div>
     </div>
   </div>
@@ -311,18 +303,19 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ====== EVENT (EST) ======
+    // ===== EVENT (EST) =====
     const EVENT_TITLE = "Valentine Date Night 💘";
     const LOCATION = "dw about it";
-    const DESCRIPTION = "wear a nice black dress and be ready by 7pm 😌";
+    const DESCRIPTION = "wear a nice black dress and be ready for a good night 😌";
 
     // 7:00 PM EST = 12:00 AM UTC (next day)
     // 10:00 PM EST = 3:00 AM UTC (next day)
     const START_UTC = "20260215T000000Z"; // Feb 14 2026 7:00 PM EST
     const END_UTC   = "20260215T030000Z"; // Feb 14 2026 10:00 PM EST
     const WHEN_PRETTY = "Sat, Feb 14, 2026 — 7:00 PM to 10:00 PM (EST)";
-    // =========================
+    // =======================
 
+    const grid = document.getElementById('giftGrid');
     const details = document.getElementById('details');
     const pickedTitle = document.getElementById('pickedTitle');
     const whenText = document.getElementById('whenText');
@@ -347,9 +340,7 @@
       const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
       const text = encodeURIComponent(EVENT_TITLE);
       const dates = encodeURIComponent(`${START_UTC}/${END_UTC}`);
-      const details = encodeURIComponent(
-        `${DESCRIPTION}\n\nGift selected: ${giftTitle}\nLocation: ${LOCATION}`
-      );
+      const details = encodeURIComponent(`${DESCRIPTION}\n\nGift selected: ${giftTitle}\nLocation: ${LOCATION}`);
       const location = encodeURIComponent(LOCATION);
       return `${base}&text=${text}&dates=${dates}&details=${details}&location=${location}`;
     }
@@ -357,7 +348,6 @@
     function downloadICS(giftTitle){
       const uid = `valentine-${Date.now()}@github-pages`;
       const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + "Z";
-
       const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
@@ -375,7 +365,7 @@ DESCRIPTION:${DESCRIPTION}\\n\\nGift selected: ${giftTitle}
 END:VEVENT
 END:VCALENDAR`;
 
-      const blob = new Blob([ics], {type: "text/calendar;charset=utf-8"});
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -383,29 +373,30 @@ END:VCALENDAR`;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 500);
+      setTimeout(()=>URL.revokeObjectURL(url), 600);
     }
 
-    document.querySelectorAll('.pick').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const gift = btn.getAttribute('data-gift');
+    // ✅ Event delegation: clicks always work even if DOM changes
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.pick');
+      if(!btn) return;
 
-        // UI selection highlight
-        document.querySelectorAll('.gift').forEach(c=>c.classList.remove('selected'));
-        btn.closest('.gift').classList.add('selected');
+      const card = btn.closest('.gift');
+      const gift = card.getAttribute('data-gift');
 
-        pickedTitle.textContent = `Selected: ${gift}`;
-        googleBtn.href = buildGoogleCalendarUrl(gift);
-        icsBtn.onclick = (e)=>{ e.preventDefault(); downloadICS(gift); };
+      document.querySelectorAll('.gift').forEach(x=>x.classList.remove('selected'));
+      card.classList.add('selected');
 
-        details.style.display = "block";
-        details.scrollIntoView({behavior:"smooth", block:"center"});
+      pickedTitle.textContent = `Selected: ${gift}`;
+      googleBtn.href = buildGoogleCalendarUrl(gift);
+      icsBtn.onclick = (ev)=>{ ev.preventDefault(); downloadICS(gift); };
 
-        showToast("Locked in ✅");
-      });
+      details.style.display = "block";
+      details.scrollIntoView({behavior:"smooth", block:"center"});
+      showToast("Locked in ✅");
     });
 
-    // Floating hearts vibe
+    // Floating hearts (won’t block clicks)
     const hearts = ["💗","💖","💘","💝","💕","❤️"];
     setInterval(()=>{
       const h = document.createElement('div');
