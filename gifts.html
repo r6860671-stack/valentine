@@ -24,6 +24,8 @@
 
     *{ box-sizing:border-box; }
 
+    html, body { overflow-x:hidden; } /* extra anti-shake */
+
     body{
       margin:0;
       min-height:100vh;
@@ -79,15 +81,15 @@
       .grid{ grid-template-columns: 1fr; }
     }
 
+    /* Gift cards now have image header, so remove inner padding */
     .gift{
       position:relative;
       border-radius: 24px;
       background: var(--panel);
       border: 1px solid rgba(255,255,255,.7);
       box-shadow: 0 16px 36px rgba(0,0,0,.11);
-      padding: 22px 18px;
       overflow:hidden;
-      min-height: 150px; /* makes it look “right” on desktop */
+      min-height: 230px; /* taller to fit image */
       display:flex;
       flex-direction:column;
       justify-content:space-between;
@@ -99,9 +101,10 @@
       content:"";
       position:absolute;
       inset:-90px;
-      background: radial-gradient(circle at top left, rgba(255,92,138,.30), transparent 55%);
-      z-index:-1;
+      background: radial-gradient(circle at top left, rgba(255,92,138,.22), transparent 55%);
+      z-index:0;
       transform: rotate(8deg);
+      pointer-events:none;
     }
 
     .gift:hover{
@@ -115,17 +118,48 @@
       box-shadow: 0 30px 70px rgba(34,197,94,.18);
     }
 
+    /* Image banner */
+    .gift-img{
+      width:100%;
+      height:130px;
+      object-fit:cover;
+      display:block;
+      position:relative;
+      z-index:1;
+      filter: saturate(1.06) contrast(1.03);
+    }
+
+    /* Soft dark fade over image for polish */
+    .imgFade{
+      position:absolute;
+      left:0; right:0;
+      top:0;
+      height:130px;
+      z-index:2;
+      background: linear-gradient(to top, rgba(0,0,0,.18), transparent 55%);
+      pointer-events:none;
+    }
+
     .emoji{
       position:absolute;
-      right:16px;
-      top:14px;
+      right:14px;
+      top:10px;
       font-size: 34px;
       opacity:.95;
-      text-shadow: 0 10px 30px rgba(0,0,0,.10);
+      text-shadow: 0 10px 30px rgba(0,0,0,.18);
+      z-index:3;
+      pointer-events:none;
+    }
+
+    /* Body area under the image */
+    .gift-body{
+      padding: 18px 18px 20px;
+      position:relative;
+      z-index:3;
     }
 
     .gift h2{
-      margin: 2px 0 16px;
+      margin: 0 0 14px;
       font-size: 22px;
       letter-spacing:-0.02em;
     }
@@ -177,9 +211,7 @@
       font-weight: 900;
     }
 
-    .picked{
-      font-weight: 900;
-    }
+    .picked{ font-weight: 900; }
 
     .kv{ margin: 10px 0; font-size: 15px; }
     .kv b{ display:inline-block; min-width: 92px; }
@@ -235,13 +267,16 @@
       transform: translateX(-50%) translateY(-6px);
     }
 
+    /* Hearts: fixed + will-change = smooth, no layout impact */
     .heart{
-      position:absolute;
-      bottom:-40px;
-      font-size:18px;
-      opacity:.55;
+      position: fixed;
+      left: 0;
+      bottom: -40px;
+      font-size: 18px;
+      opacity: .55;
       animation: floatUp 7s linear infinite;
-      pointer-events:none; /* important so it never blocks clicks */
+      pointer-events: none;
+      will-change: transform;
     }
     @keyframes floatUp{
       0%{ transform: translateY(0) rotate(0deg); opacity:0; }
@@ -261,21 +296,33 @@
 
       <div class="grid" id="giftGrid">
         <div class="gift" data-gift="The Drinker 🥂">
+          <img class="gift-img" src="e550ab43-6e83-45c5-9097-8025075cfe60.JPG" alt="The Drinker">
+          <div class="imgFade"></div>
           <div class="emoji">🥂</div>
-          <h2>The Drinker</h2>
-          <button class="pick" type="button">Choose this</button>
+          <div class="gift-body">
+            <h2>The Drinker</h2>
+            <button class="pick" type="button">Choose this</button>
+          </div>
         </div>
 
         <div class="gift" data-gift="The Mysterious and Cool 🕶️">
+          <img class="gift-img" src="IMG_3695.jpeg" alt="The Mysterious and Cool">
+          <div class="imgFade"></div>
           <div class="emoji">🕶️</div>
-          <h2>The Mysterious and Cool</h2>
-          <button class="pick" type="button">Choose this</button>
+          <div class="gift-body">
+            <h2>The Mysterious and Cool</h2>
+            <button class="pick" type="button">Choose this</button>
+          </div>
         </div>
 
         <div class="gift" data-gift="The Romantic 🌹">
+          <img class="gift-img" src="CD6FAC1E-EA4D-478B-93A7-94BE6C6F9C28.JPG" alt="The Romantic">
+          <div class="imgFade"></div>
           <div class="emoji">🌹</div>
-          <h2>The Romantic</h2>
-          <button class="pick" type="button">Choose this</button>
+          <div class="gift-body">
+            <h2>The Romantic</h2>
+            <button class="pick" type="button">Choose this</button>
+          </div>
         </div>
       </div>
 
@@ -396,18 +443,18 @@ END:VCALENDAR`;
       showToast("Locked in ✅");
     });
 
-    // Floating hearts (won’t block clicks)
+    // Floating hearts (fixed so they never cause layout shift)
     const hearts = ["💗","💖","💘","💝","💕","❤️"];
     setInterval(()=>{
       const h = document.createElement('div');
       h.className = 'heart';
       h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-      h.style.left = Math.random()*100 + "vw";
-      h.style.animationDuration = (5 + Math.random()*5) + "s";
+      h.style.left = (Math.random()*100) + "vw";
+      h.style.animationDuration = (6 + Math.random()*5) + "s";
       h.style.fontSize = (14 + Math.random()*22) + "px";
       document.body.appendChild(h);
-      setTimeout(()=>h.remove(), 10000);
-    }, 260);
+      setTimeout(()=>h.remove(), 11000);
+    }, 900);
   </script>
 </body>
 </html>
